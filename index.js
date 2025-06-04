@@ -33,7 +33,7 @@ app.use(express.json({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-    origin: 'http://localhost:8080',
+    origin: 'https://poetic-concha-ef5ba3.netlify.app',
     credentials: true,
 }));
 app.use('/css', express.static(path.join(__dirname, 'css')));
