@@ -1,6 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-const sequelize = new Sequelize('postgresql://ul1e6bvbtulgghqikapt:HBmabTXjQKj9cuvnVQJJMMGcnDfwqf@bok8olbwcb3wgp8da8ze-postgresql.services.clever-cloud.com:50013/bok8olbwcb3wgp8da8ze', {
+const sequelize = new Sequelize('postgresql://un7hhcsp8eufqzw40aay:mefouwZLLl1McTuIFMHltGmuavyGBm@bknz3zxtfq7sfrff4fbn-postgresql.services.clever-cloud.com:50013/bknz3zxtfq7sfrff4fbn', {
     dialect: 'postgres',
     logging: false,
     dialectOptions: {
@@ -16,8 +16,8 @@ const sequelize = new Sequelize('postgresql://ul1e6bvbtulgghqikapt:HBmabTXjQKj9c
 });
 
 const User = require('./User')(sequelize, DataTypes);
-const Client = require('./Client')(sequelize, DataTypes);
-const Repair = require('./Repair')(sequelize, DataTypes);
+const Audiotrack = require('./Audiotrack')(sequelize, DataTypes);
+const Artist = require('./Artist')(sequelize, DataTypes);
 
 sequelize.sync({ alter: true })
     .then(() => console.log('Models synchronized with database'))
@@ -26,6 +26,6 @@ sequelize.sync({ alter: true })
 module.exports = {
     sequelize,
     User,
-    Client,
-    Repair
+    Audiotrack,
+    Artist
 };

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Просмотр исполнителя</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div id="content">
+        <div class="app-container">
+            <h1 class="page-title">Просмотр исполнителя</h1>
+            <div class="container">
+                <div class="product-info">
+                    <div class="product-image-container" id="product-image"></div>
+                    <div class="info-container">
+                        <p><strong>Имя исполнителя:</strong> <span id="name"></span></p>
+                        <p><strong>Биография:</strong> <span id="bio"></span></p>
+                        <p><strong>Страна:</strong> <span id="country"></span></p>
+                        <p><strong>Жанр:</strong> <span id="genre"></span></p>
+                        <p><strong>Год основания:</strong> <span id="formed_year"></span></p>
+                        <p><strong>Активен:</strong> <span id="is_active"></span></p>
+                        <p><strong>Лейбл:</strong> <span id="label"></span></p>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <a href="/artists/index.html" class="btn-secondary">Вернуться к списку</a>
+                    <a id="edit-link" class="btn-primary">Редактировать</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/js/layout.js"></script>
+    <script src="/js/header.js"></script>
+    <script>
+        async function loadArtistData() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const artistId = urlParams.get('id');
+                if (!artistId) {
+                    throw new Error('ID исполнителя не указан');
+                }
+                const response = await fetch(`/api/view-artist/${artistId}`);
+                if (!response.ok) {
+                    throw new Error(`Ошибка сервера: ${response.status} ${response.statusText}`);
+                }
+                const artist = await response.json();
+                document.getElementById('product-image').innerHTML = artist.photo ? `<img class="product-image" src="${artist.photo.replace('/img/', '/images/')}" alt="Artist Photo">` : 'Нет изображения';
+                document.getElementById('name').textContent = artist.name || 'N/A';
+                document.getElementById('bio').textContent = artist.bio || 'N/A';
+                document.getElementById('country').textContent = artist.country || 'N/A';
+                document.getElementById('genre').textContent = artist.genre || 'N/A';
+                document.getElementById('formed_year').textContent = artist.formed_year || 'N/A';
+                document.getElementById('is_active').textContent = artist.is_active ? 'Да' : 'Нет';
+                document.getElementById('label').textContent = artist.label || 'N/A';
+                document.getElementById('edit-link').href = `/artists/edit.html?id=${artist.id}`;
+            } catch (error) {
+                console.error('Ошибка загрузки данных:', error);
+                document.getElementById('content').innerHTML = `<p>Ошибка загрузки данных: ${error.message}</p>`;
+            }
+        }
+        window.onload = loadArtistData;
+    </script>
+</body>
+</html>

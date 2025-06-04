@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить исполнителя</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div id="content">
+        <div class="app-container">
+            <h1 class="page-title">Добавить нового исполнителя</h1>
+            <form class="form-container" id="create-form" method="POST" enctype="multipart/form-data">
+                <div class="input-group">
+                    <label for="name">Имя исполнителя:</label>
+                    <input id="name" class="form-input" type="text" name="name" required>
+                </div>
+                <div class="input-group">
+                    <label for="bio">Биография:</label>
+                    <textarea id="bio" class="form-input" name="bio"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="country">Страна:</label>
+                    <input id="country" class="form-input" type="text" name="country">
+                </div>
+                <div class="input-group">
+                    <label for="genre">Жанр:</label>
+                    <input id="genre" class="form-input" type="text" name="genre">
+                </div>
+                <div class="input-group">
+                    <label for="formed_year">Год основания:</label>
+                    <input id="formed_year" class="form-input" type="number" name="formed_year">
+                </div>
+                <div class="input-group">
+                    <label for="is_active">Активен:</label>
+                    <input id="is_active" class="form-input" type="checkbox" name="is_active" value="true">
+                </div>
+                <div class="input-group">
+                    <label for="label">Музыкальный лейбл:</label>
+                    <input id="label" class="form-input" type="text" name="label">
+                </div>
+                <div class="input-group">
+                    <label for="photo">Изображение:</label>
+                    <input id="photo" class="form-input" type="file" name="photo" accept="image/*">
+                </div>
+                <div class="action-buttons">
+                    <button class="btn-primary" type="submit">Добавить исполнителя</button>
+                    <a href="/artists/index.html" class="btn-secondary">Вернуться к списку</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="/js/layout.js"></script>
+    <script src="/js/header.js"></script>
+    <script>
+        document.getElementById('create-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const submitButton = form.querySelector('button[type="submit"]');
+            try {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Отправка...';
+                const response = await fetch('/add-artist', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || 'Неизвестная ошибка сервера');
+                }
+                window.location.href = '/artists/index.html';
+            } catch (error) {
+                console.error('Ошибка при добавлении исполнителя:', error);
+                alert(`Ошибка: ${error.message}`);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Добавить исполнителя';
+            }
+        });
+    </script>
+</body>
+</html>

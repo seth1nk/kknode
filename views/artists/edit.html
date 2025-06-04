@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать исполнителя</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div id="content">
+        <div class="app-container">
+            <h1 class="page-title">Редактировать исполнителя</h1>
+            <form class="form-container" id="edit-form" method="POST" enctype="multipart/form-data">
+                <div class="input-group">
+                    <label for="name">Имя исполнителя:</label>
+                    <input id="name" class="form-input" type="text" name="name" required>
+                </div>
+                <div class="input-group">
+                    <label for="bio">Биография:</label>
+                    <textarea id="bio" class="form-input" name="bio"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="country">Страна:</label>
+                    <input id="country" class="form-input" type="text" name="country">
+                </div>
+                <div class="input-group">
+                    <label for="genre">Жанр:</label>
+                    <input id="genre" class="form-input" type="text" name="genre">
+                </div>
+                <div class="input-group">
+                    <label for="formed_year">Год основания:</label>
+                    <input id="formed_year" class="form-input" type="number" name="formed_year">
+                </div>
+                <div class="input-group">
+                    <label for="is_active">Активен:</label>
+                    <input id="is_active" class="form-input" type="checkbox" name="is_active" value="true">
+                </div>
+                <div class="input-group">
+                    <label for="label">Музыкальный лейбл:</label>
+                    <input id="label" class="form-input" type="text" name="label">
+                </div>
+                <div class="input-group">
+                    <label for="photo">Изображение:</label>
+                    <input id="photo" class="form-input" type="file" name="photo" accept="image/*">
+                </div>
+                <div class="action-buttons">
+                    <button class="btn-primary" type="submit">Сохранить изменения</button>
+                    <a href="/artists/index.html" class="btn-secondary">Вернуться к списку</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="/js/layout.js"></script>
+    <script src="/js/header.js"></script>
+    <script>
+        async function loadArtistData() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const artistId = urlParams.get('id');
+                if (!artistId) {
+                    throw new Error('ID исполнителя не указан');
+                }
+                document.getElementById('edit-form').action = `/edit-artist/${artistId}`;
+                const response = await fetch(`/api/view-artist/${artistId}`);
+                if (!response.ok) {
+                    throw new Error(`Ошибка сервера: ${response.status} ${response.statusText}`);
+                }
+                const artist = await response.json();
+                document.getElementById('name').value = artist.name || '';
+                document.getElementById('bio').value = artist.bio || '';
+                document.getElementById('country').value = artist.country || '';
+                document.getElementById('genre').value = artist.genre || '';
+                document.getElementById('formed_year').value = artist.formed_year || '';
+                document.getElementById('is_active').checked = artist.is_active || false;
+                document.getElementById('label').value = artist.label || '';
+            } catch (error) {
+                console.error('Ошибка загрузки данных:', error);
+                document.getElementById('content').innerHTML = `<p>Ошибка загрузки данных: ${error.message}</p>`;
+            }
+        }
+        window.onload = loadArtistData;
+    </script>
+</body>
+</html>

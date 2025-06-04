@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить аудиотрек</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div id="content">
+        <div class="app-container">
+            <h1 class="page-title">Добавить новый аудиотрек</h1>
+            <form class="form-container" id="create-form" method="POST" enctype="multipart/form-data">
+                <div class="input-group">
+                    <label for="title">Название трека:</label>
+                    <input id="title" class="form-input" type="text" name="title" required>
+                </div>
+                <div class="input-group">
+                    <label for="artist">Исполнитель:</label>
+                    <input id="artist" class="form-input" type="text" name="artist" required>
+                </div>
+                <div class="input-group">
+                    <label for="album">Альбом:</label>
+                    <input id="album" class="form-input" type="text" name="album">
+                </div>
+                <div class="input-group">
+                    <label for="duration">Длительность (сек):</label>
+                    <input id="duration" class="form-input" type="number" name="duration" required>
+                </div>
+                <div class="input-group">
+                    <label for="genre">Жанр:</label>
+                    <input id="genre" class="form-input" type="text" name="genre">
+                </div>
+                <div class="input-group">
+                    <label for="play_count">Количество воспроизведений:</label>
+                    <input id="play_count" class="form-input" type="number" name="play_count" value="0">
+                </div>
+                <div class="input-group">
+                    <label for="release_year">Год выпуска:</label>
+                    <input id="release_year" class="form-input" type="number" name="release_year">
+                </div>
+                <div class="input-group">
+                    <label for="photo">Изображение:</label>
+                    <input id="photo" class="form-input" type="file" name="photo" accept="image/*">
+                </div>
+                <div class="action-buttons">
+                    <button class="btn-primary" type="submit">Добавить аудиотрек</button>
+                    <a href="/audiotracks/index.html" class="btn-secondary">Вернуться к списку</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="/js/layout.js"></script>
+    <script src="/js/header.js"></script>
+    <script>
+        document.getElementById('create-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const submitButton = form.querySelector('button[type="submit"]');
+            try {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Отправка...';
+                const response = await fetch('/add-audiotrack', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || 'Неизвестная ошибка сервера');
+                }
+                window.location.href = '/audiotracks/index.html';
+            } catch (error) {
+                console.error('Ошибка при добавлении аудиотрека:', error);
+                alert(`Ошибка: ${error.message}`);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Добавить аудиотрек';
+            }
+        });
+    </script>
+</body>
+</html>

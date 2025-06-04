@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Просмотр аудиотрека</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div id="content">
+        <div class="app-container">
+            <h1 class="page-title">Просмотр аудиотрека</h1>
+            <div class="container">
+                <div class="product-info">
+                    <div class="product-image-container" id="product-image"></div>
+                    <div class="info-container">
+                        <p><strong>Название трека:</strong> <span id="title"></span></p>
+                        <p><strong>Исполнитель:</strong> <span id="artist"></span></p>
+                        <p><strong>Альбом:</strong> <span id="album"></span></p>
+                        <p><strong>Длительность:</strong> <span id="duration"></span></p>
+                        <p><strong>Жанр:</strong> <span id="genre"></span></p>
+                        <p><strong>Воспроизведений:</strong> <span id="play_count"></span></p>
+                        <p><strong>Год выпуска:</strong> <span id="release_year"></span></p>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <a href="/audiotracks/index.html" class="btn-secondary">Вернуться к списку</a>
+                    <a id="edit-link" class="btn-primary">Редактировать</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/js/layout.js"></script>
+    <script src="/js/header.js"></script>
+    <script>
+        async function loadAudiotrackData() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const audiotrackId = urlParams.get('id');
+                if (!audiotrackId) {
+                    throw new Error('ID аудиотрека не указан');
+                }
+                const response = await fetch(`/api/view-audiotrack/${audiotrackId}`);
+                if (!response.ok) {
+                    throw new Error(`Ошибка сервера: ${response.status} ${response.statusText}`);
+                }
+                const audiotrack = await response.json();
+                document.getElementById('product-image').innerHTML = audiotrack.photo ? `<img class="product-image" src="${audiotrack.photo.replace('/img/', '/images/')}" alt="Audiotrack Photo">` : 'Нет изображения';
+                document.getElementById('title').textContent = audiotrack.title || 'N/A';
+                document.getElementById('artist').textContent = audiotrack.artist || 'N/A';
+                document.getElementById('album').textContent = audiotrack.album || 'N/A';
+                document.getElementById('duration').textContent = audiotrack.duration || 'N/A';
+                document.getElementById('genre').textContent = audiotrack.genre || 'N/A';
+                document.getElementById('play_count').textContent = audiotrack.play_count || '0';
+                document.getElementById('release_year').textContent = audiotrack.release_year || 'N/A';
+                document.getElementById('edit-link').href = `/audiotracks/edit.html?id=${audiotrack.id}`;
+            } catch (error) {
+                console.error('Ошибка загрузки данных:', error);
+                document.getElementById('content').innerHTML = `<p>Ошибка загрузки данных: ${error.message}</p>`;
+            }
+        }
+        window.onload = loadAudiotrackData;
+    </script>
+</body>
+</html>
